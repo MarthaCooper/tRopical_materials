@@ -26,7 +26,7 @@ mono_accent(
 #Outline
 
 ###1. Functions
-###2. Iteration (Loops) 
+###2. Iteration and Loop Functions 
 ###3. Conditional Statements
 
 ---
@@ -257,14 +257,24 @@ input_and_process <- function(my_csv_file){
 layout: false
 class: inverse, middle, center
 
-#Iteration (Loops)
+#Iteration and Loop Functions
 
 ---
-#Iteration (Loops)
 
-####+ Like functions, iteration (loops) is (are) another tool to ***reduce duplication*** in your code, resulting in code that is ***easier to read*** with ***reducing mistakes***.
+#Iteration 
+
+#### Like functions, iteration is  another tool to ***reduce duplication*** in your code, resulting in code that is ***easier to read*** with ***reducing mistakes***.
+
+Some main tools to iterate in R are: 
++ **Loops** (a good way to learn iteration)
++ **Loop functions** -  (more efficient) like *apply family statements* (behind-the-scenes looping in base) OR the *purr package* (behind-the-scenes looping using the Tidyverse)
+
+--
+
+Here we will focus on Looping and apply statements. Take a look at the Purr package from Hadley Wickham in your own time. 
 
 ---
+
 #For Loops
 
 Say we want to calculate the mean of every column in a dataframe (we will use the mtcars dataframe as an example:)
@@ -335,6 +345,64 @@ USArrests_medians
 
 ---
 
+#Loop Functions 
+
++ Apply functions are **more efficient** than for loops, particularly when working with big data. 
++ The apply family contains lots of functions - *apply(), sapply(), lapply(), tapply() and mapply()*
++ They loop over different structures in R and generate a different structured outputs. 
++ Here, we will look at **apply()** which loops over arrays/matrixes and **lapply**, which loops over lists. 
+---
+
+#apply()
+
+```{r, eval = F}
+apply(X, MARGIN, FUN, ...)
+```
+
++ Loops over an array or matrix (X). 1 = rows and 2 = columns
++ Can loop over columns or rows with the MARGIN argument 
++ Specify a function (FUN) that you want to apply to the data. It can be any function in R (like mean()) or a user definied function. 
+
+We can use apply to calculate the mean of all columns in the mtcars dataframe like this: 
+```{r}
+my_means <- apply(mtcars, 2, mean)
+my_means
+```
+
+---
+#lapply()
+
+```{r, eval = F}
+lapply(X, FUN, ...)
+```
+
++ loops over elements in a list (X) and return a list
++ Specify a function (FUN) that you want to apply to the data. It can be any function in R (like mean()) or a user defined function. 
++ Returns a list of length X which is the result of the function applied to each element of X
+
+```{r}
+mtcars_list <- as.list(mtcars) # turn mtcars into a list for demonstration
+
+my_means <- lapply(mtcars_list, mean)
+head(my_means, 2) 
+```
+
+---
+#Exercise 4
+
++ Use an apply family function to calculate the sum of each of the columns in the mtcars dataset
+
+--
+
++ Answer
+
+```{r}
+mtcars_sums <- apply(mtcars, 2, sum)
+mtcars_sums
+```
+
+---
+
 layout: false
 class: inverse, middle, center
 
@@ -400,7 +468,7 @@ my_test
 ```
 
 ---
-#Exercise 4
+#Exercise 5
 
 ```{r}
 x <- 10
@@ -422,7 +490,7 @@ if(x*y > 10){
 ```
 
 ---
-#Exercise 4
+#Exercise 5
 
 + Redefine x and y as follows:
 ```{r}
@@ -448,7 +516,7 @@ if(x*y > 10){
 
 ---
 
-#Exercise 5
+#Exercise 6
 
 ```{r}
 x <- c(3,-4,6,-9)
