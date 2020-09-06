@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Functional Programming in R</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Martha Cooper, tRopical_R" />
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Functional Programming in R
+### Martha Cooper, tRopical_R
+### James Cook University::AITHM
+### 2019/06/6 (updated: 2020-09-06)
+
+---
+
+
+
+#Outline
+
+###1. Functions
+###2. Iteration (Loops) 
+###3. Conditional Statements
+
+---
+
+layout: false
+class: inverse, middle, center
+
+#Functions
+
+---
+
+#What is a function?
+
+.pull-left[
+
+- ####A function is a reusable piece of code that does a specific task
+]
+
+.pull-right[
+&lt;img src="function_schematic1.png" style="width: 100%" /&gt;
+]
+
+---
+#What is a function?
+
+.pull-left[
+- ####A function is a reusable piece of code that does a specific task
+]
+
+.pull-right[
+&lt;img src="function_schematic2.png" style="width: 100%" /&gt;
+]
+
+---
+#R has built in functions 
+.pull-left[
+- ####Schematic
+&lt;img src="function_mean.png" style="width: 80%" /&gt;
+]
+
+.pull-right[
+- ####R code
+
+
+```r
+#input
+x &lt;- c(3,5,9,15)
+
+
+#function
+mean(x)
+```
+
+```
+## [1] 8
+```
+]
+
+---
+
+#Functions take arguments
+.pull-left[
+- #### Function inputs are called arguments
+- #### ```mean()``` has 3 arguments
+- #### ```?mean``` to view arguments
+- #### Arguments can be specified by *order* or *name*
+]
+
+.pull-right[
+
+
+```r
+x # a numeric vector
+
+trim # fractions of outliers
+     # you would like to
+     # trim from each end 
+
+na.rm # option to remove
+      # missing values
+```
+
+]
+
+---
+
+# Packages also contain functions 
+
+
+```r
+library(ggplot2)
+ggplot(data = mtcars, aes(x = as.factor(cyl), y = mpg))+
+  geom_boxplot()+
+  xlab("cyl")
+```
+
+![](ppt_md_files/figure-html/unnamed-chunk-3-1.png)&lt;!-- --&gt;
+
+---
+
+#Function Syntax
+
+A function is defined as follows:
+
+```r
+add_1 &lt;- function(x){
+  x + 1
+}
+```
+
+We can break this down into: 
+
++ The **signature** (the user interface)
+
+```r
+add_1 &lt;- function(x)
+```
+
++ The **body** (the code the function executes)
+
+```r
+{
+  x + 1
+}
+```
+
+---
+
+#3 Reasons to write functions
+
+###1. Code becomes easier to read &amp; understand
+
+Functions have evocative names e.g. mean(), sum(), sd()
+
+###2. Code becomes easier to change
+
+add_1 &lt;- function(x){x + 1} can easily become 
+add_2 &lt;- function(x){x + 2}
+
+###3. Less mistakes
+
+No copy and pasting chunks of code
+
+---
+
+layout: false
+class: inverse, middle, center
+
+#"You should consider writing a function whenever you've copied and pasted a block of code more than twice"
+.right[Hadley Wickham]
+
+---
+
+#Writing your own function (Step by Step) 
+
+&lt;img src="anatomy.png" style="width: 90%" /&gt; 
+
+---
+
+# Embedding Functions
+
+This code:
+
+```r
+exp_1 &lt;- read.csv("exp_1_data.csv") #import
+exp_1_filtered &lt;- filter(exp1, value &lt; 10) #filter
+```
+
+Can be wrapped into a function:
+
+```r
+#write a function to import and filter data
+import_and_filter &lt;- function(path_to_file){
+  
+  x &lt;- read.csv(path_to_file) #import
+  x &lt;- filter(x, value &lt; 10) #filter
+  return(x)
+}
+```
+
+Now we can repeat for lots of experiments:
+
+```r
+#Use function
+exp_1 &lt;- import_and_filter("exp_1_data.csv")
+exp_2 &lt;- import_and_filter("exp_2_data.csv")
+exp_3 &lt;- import_and_filter("exp_3_data.csv")
+```
+
+---
+# Exercise 1
+
++ Write your own function that multiplies the input by 10 
+
+--
+
++ Answer
+
+
+```r
+times10 &lt;- function(x){
+  10*x
+}
+```
+
+---
+#Documentation
+
++ Documentation is essential, even if the only person reading your code will be you in the future
++ Check help for any function for the best examples (?mean)
+
+
+```r
+#multiplies the input by ten
+#input must be numeric
+times10 &lt;- function(x){
+  10*x
+}
+```
+
+---
+
+#Exercise 2
+
++ Embed the following functions in your own function
+
+
+```r
+my_data &lt;- read.csv("my_csv_file.csv")
+my_processed_data &lt;- mutate(my_data, total = sum)
+```
+
+--
++ Answer
+
+
+```r
+input_and_process &lt;- function(my_csv_file){
+  my_data &lt;- read.csv(my_csv_file)
+  my_processed_data &lt;- mutate(my_data, total = sum(my_column))
+  return(my_processed_data)
+}
+```
+
+---
+
+layout: false
+class: inverse, middle, center
+
+#Iteration (Loops)
+
+---
+#Iteration (Loops)
+
+####+ Like functions, iteration (loops) is (are) another tool to ***reduce duplication*** in your code, resulting in code that is ***easier to read*** with ***reducing mistakes***.
+
+---
+#For Loops
+
+Say we want to calculate the mean of every column in a dataframe (we will use the mtcars dataframe as an example:)
+
+```r
+head(mtcars, 3)
+```
+
+```
+##                mpg cyl disp  hp drat    wt  qsec vs am gear carb
+## Mazda RX4     21.0   6  160 110 3.90 2.620 16.46  0  1    4    4
+## Mazda RX4 Wag 21.0   6  160 110 3.90 2.875 17.02  0  1    4    4
+## Datsun 710    22.8   4  108  93 3.85 2.320 18.61  1  1    4    1
+```
+
+We could calculate each mean one by one, like this:
+
+```r
+mean(mtcars$mpg) #20.09062
+mean(mtcars$cyl) #6.1875
+mean(mtcars$disp) #230.7219
+# ...etc ...
+```
+  
+---
+# For Loops
+A better (think ***less errors*** and ***easier to read***) approach is to use a ***For Loop***
+
+
+```r
+mtcars_means &lt;- vector(length = ncol(mtcars))  # 1. Define Output
+
+for (i in seq_along(mtcars)) {                 # 2. Define Sequence
+  mtcars_means[[i]] &lt;- mean(mtcars[[i]])       # 3. Define Body
+}
+
+mtcars_means
+```
+
+```
+##  [1]  20.090625   6.187500 230.721875 146.687500   3.596563   3.217250
+##  [7]  17.848750   0.437500   0.406250   3.687500   2.812500
+```
+
+---
+
+# Loops have 3 parts:
+
++ Before you start the loop, you must define a container for the output. An good way to do this is to create an empty vector the same length as our dataframe we want to iterate through:
+
+```r
+mtcars_means &lt;- vector(length = ncol(mtcars))  # 1. Define Output
+```
+
++ We then define what to iterate/loop through. Each pass of the loop will assign *i* to a different value from seq_along(mtcars) - in this case each value of *i* is a column of mtcars:
+
+```r
+for (i in seq_along(mtcars)) # 2. Define sequence
+```
+
++ The body is the code that we want to execute for every value of *i*. It is run repeatedly, in this case for each column of mtcars: 
+
+
+```r
+mtcars_means[[i]] &lt;- mean(mtcars[[i]])
+```
+
+---
+
+#Exercise 3
++ Write a for loop to calculate the median of every column in the USArrests dataset
+
+--
+
++ Answer
+
+```r
+USArrests_medians &lt;- vector(length = ncol(USArrests))# 1. Define Output
+
+for (i in seq_along(USArrests)) {                    # 2. Define Sequence
+  USArrests_medians[[i]] &lt;- median(USArrests[[i]])   # 3. Define Body
+}
+
+USArrests_medians
+```
+
+```
+## [1]   7.25 159.00  66.00  20.10
+```
+
+---
+
+layout: false
+class: inverse, middle, center
+
+#Conditional Statements
+
+---
+# If Statements
+
+If Statements are conditional statements in R. In an If Statement, we define code to be executed **if** certain conditions are met
+
+
+```r
+x &lt;- 5
+
+if(x &gt; 0){                      # 1. Define Condition
+    print("Positive Number")    # 2. Define Body
+}
+```
+
+```
+## [1] "Positive Number"
+```
+
+---
+# If...Else Statements
+
+But what if x &lt; 0 
+
+
+```r
+x &lt;- -4
+
+if(x &gt; 0){                      # 1. Define Condition
+    print("Positive Number")    # 2. Define Body
+}
+```
+
+--
+
++ Nothing happens... unless we add else
+
+
+```r
+x &lt;- -4
+
+if(x &gt; 0){                      # 1. Define Condition
+    print("Positive Number")    # 2. Define Body
+} else {
+  print("Negative Number")
+}
+```
+
+```
+## [1] "Negative Number"
+```
+
+---
+
+#Side Note: ifelse() is a fast alternative
+
++ For simple cases, we can use the base R function ifelse() instead
+
+
+```r
+x &lt;- 5
+
+my_test &lt;- ifelse(test = x&gt;0, 
+                  yes = print("Positive Number"), 
+                  no = print("Negative Number"))
+```
+
+```
+## [1] "Positive Number"
+```
+
+```r
+#This means: if x &gt; 0 , 
+#            then print "Positive Number", 
+#            or if not print "Negative Number"
+
+my_test
+```
+
+```
+## [1] "Positive Number"
+```
+
+---
+#Exercise 4
+
+
+```r
+x &lt;- 10
+y &lt;- 5
+```
+
++ Define an condition statement that prints "x times y is big" if x*y &gt; 10
+
+--
+
++ Answer
+
+
+```r
+if(x*y &gt; 10){
+  print("x times y is big")
+}
+```
+
+```
+## [1] "x times y is big"
+```
+
+---
+#Exercise 4
+
++ Redefine x and y as follows:
+
+```r
+x &lt;- 0.8
+y &lt;- 2
+```
+
++ Add a useful else... condition to our if else statement from before
+
+--
+
++ Answer
+
+
+```r
+if(x*y &gt; 10){
+  print("x times y is big")
+} else {
+  print("x times y is small")
+}
+```
+
+```
+## [1] "x times y is small"
+```
+
+---
+
+#Exercise 5
+
+
+```r
+x &lt;- c(3,-4,6,-9)
+```
+
++ Using a For Loop, iterate through the vector x and print whether each value is positive or negative
+
+--
+
++ Answer
+
+
+```r
+my_answers &lt;- vector(mode = "character", length = length(x))
+
+for (i in seq_along(x)){
+
+  if(x[i] &gt; 0){
+    my_answers[i] = "X is positive"
+  } else {
+    my_answers[i] = "X is negative"
+  }
+}
+
+my_answers
+```
+
+```
+## [1] "X is positive" "X is negative" "X is positive" "X is negative"
+```
+
+---
+
+#Acknowledgements: 
+
+- Some material used in this presentation has been modified from https://r4ds.had.co.nz/
+- Slides created via the R package **xaringan** 
+- Theme created with the R package **xaringanthemer**
+- Help has come from **remark.js**, **knitr**, and **R Markdown**.
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

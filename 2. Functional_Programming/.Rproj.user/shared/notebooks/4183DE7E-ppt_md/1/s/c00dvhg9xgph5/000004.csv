@@ -1,0 +1,8 @@
+"0","if(x*y > 10){
+  print(""X times Y is big"")
+}
+"
+"1","[1]"
+"1"," ""X times Y is big"""
+"1","
+"
