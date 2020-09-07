@@ -13,7 +13,7 @@ class: center, middle, inverse, title-slide
 # Functional Programming in R
 ### Martha Cooper, tRopical_R
 ### James Cook University::AITHM
-### 2019/06/6 (updated: 2020-09-06)
+### 2019/06/6 (updated: 2020-09-07)
 
 ---
 
@@ -213,6 +213,7 @@ exp_3 &lt;- import_and_filter("exp_3_data.csv")
 ```
 
 ---
+
 # Exercise 1
 
 + Write your own function that multiplies the input by 10 
@@ -256,6 +257,7 @@ my_processed_data &lt;- mutate(my_data, total = sum)
 ```
 
 --
+
 + Answer
 
 
@@ -282,7 +284,7 @@ class: inverse, middle, center
 
 Some main tools to iterate in R are: 
 + **Loops** (a good way to learn iteration)
-+ **Loop functions** -  (more efficient) like *apply family statements* (behind-the-scenes looping in base) OR the *purr package* (behind-the-scenes looping using the Tidyverse)
++ **Loop functions** -  (more efficient) like *apply family statements* (behind-the-scenes looping in base) OR the *purrr package* (behind-the-scenes looping using the Tidyverse)
 
 --
 
@@ -354,7 +356,7 @@ for (i in seq_along(mtcars)) # 2. Define sequence
 
 
 ```r
-mtcars_means[[i]] &lt;- mean(mtcars[[i]])
+mtcars_means[[i]] &lt;- mean(mtcars[[i]]) # 3. Define body
 ```
 
 ---
@@ -409,10 +411,10 @@ my_means
 ```
 
 ```
-##        mpg        cyl       disp         hp       drat         wt       qsec 
-##  20.090625   6.187500 230.721875 146.687500   3.596563   3.217250  17.848750 
-##         vs         am       gear       carb 
-##   0.437500   0.406250   3.687500   2.812500
+##        mpg        cyl       disp         hp       drat         wt 
+##  20.090625   6.187500 230.721875 146.687500   3.596563   3.217250 
+##       qsec         vs         am       gear       carb 
+##  17.848750   0.437500   0.406250   3.687500   2.812500
 ```
 
 ---

@@ -202,6 +202,7 @@ exp_3 <- import_and_filter("exp_3_data.csv")
 ```
 
 ---
+
 # Exercise 1
 
 + Write your own function that multiplies the input by 10 
@@ -242,6 +243,7 @@ my_processed_data <- mutate(my_data, total = sum)
 ```
 
 --
+
 + Answer
 
 ```{r, eval = FALSE}
@@ -267,7 +269,7 @@ class: inverse, middle, center
 
 Some main tools to iterate in R are: 
 + **Loops** (a good way to learn iteration)
-+ **Loop functions** -  (more efficient) like *apply family statements* (behind-the-scenes looping in base) OR the *purr package* (behind-the-scenes looping using the Tidyverse)
++ **Loop functions** -  (more efficient) like *apply family statements* (behind-the-scenes looping in base) OR the *purrr package* (behind-the-scenes looping using the Tidyverse)
 
 --
 
@@ -321,7 +323,7 @@ for (i in seq_along(mtcars)) # 2. Define sequence
 + The body is the code that we want to execute for every value of *i*. It is run repeatedly, in this case for each column of mtcars: 
 
 ```{r, eval = F}
-mtcars_means[[i]] <- mean(mtcars[[i]])
+mtcars_means[[i]] <- mean(mtcars[[i]]) # 3. Define body
 ```
 
 ---
