@@ -13,7 +13,7 @@ output:
       highlightLines: true
       countIncrementalSlides: false
 editor_options: 
-  chunk_output_type: inline
+  chunk_output_type: console
 ---
 
 ```{r xaringan-themer, include = FALSE}
@@ -252,7 +252,7 @@ test <- iris[-split, ]
 
 c(nrow(train), nrow(test)) # print number of observations in test vs. train
 
-table(train$Species) %>% prop.table() # Proportions of Survived Yes and No
+table(train$Species) %>% prop.table() # Proportions of Species 
 ```
 
 ---
