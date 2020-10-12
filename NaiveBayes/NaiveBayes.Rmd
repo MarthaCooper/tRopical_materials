@@ -32,6 +32,14 @@ library(tidyr)
 library(ggplot2)
 ```
 
+### Get the code
+
+**https://github.com/MarthaCooper/tRopical_materials**
+
++ Code -> Download ZIP
+
+---
+
 ### Naive Bayes Classifier
 
 - Supervised, probabilistic classifier based on Bayes Theorem
