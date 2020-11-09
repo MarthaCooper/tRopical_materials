@@ -1,8 +1,8 @@
 ---
-title: "Naive Bayes Classification in R"
-subtitle: ""
-author: "Martha Cooper"
-institute: "Australian Institute of Tropical Health and Medicine"
+title: "MA8510: Introduction to Data Mining"
+subtitle: "Collaborate Session 2: Naive Bayes"
+author: "Martha Cooper, PhD"
+institute: "JCU Masters of Data Science"
 date: "2019-21-9 (updated: `r Sys.Date()`)"
 output:
   xaringan::moon_reader:
@@ -32,11 +32,21 @@ library(tidyr)
 library(ggplot2)
 ```
 
-### Get the code
+## Housekeeping
 
-**https://github.com/MarthaCooper/tRopical_materials**
++ Collaborate 1 = **Wednesdays 6-7pm** (Martha)
 
-+ Code -> Download ZIP
++ Collaborate 2 = **Thursdays 7-8pm** (Hongbin)
+
+For my Collaborate Sessions, you can get the **slides & R code** for each week here:
+
+**https://github.com/MarthaCooper/MA8510**
+
+.center[
+
+<img src="Pics/download_github.png" style="width: 50%" />
+
+]
 
 ---
 
